@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/lib/d3.v4.3.0.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+    <script src="http://d3js.org/d3.v3.js"></script>
+
+	<style>
+
+    	body {
+	     margin: 50px;
+        }
+
+
+	</style>
+
+	<style type="text/css">
+		h1 {
+			font-family: "Trebuchet MS", Helvetica, sans-serif;
+			font-size: 35px;
+		}
+
+		p {
+			width: 600px;
+			font-family: "Tahoma", Geneva, sans-serif;
+			font-size: 15px;
+		}
+	</style>
+
+</head>
+<body>
+
+	<h1>Introdução</h1>
+	<p>
+	De tudo o que se é visto do famoso naufrágio do Titanic, pouco é explorado sobre as características da tripulação que ingressou nos três pontos de embarque rumo à Nova York. Southampton (Reino Unido), Cherbourg (França) e Queenstown (Irlanda) foram as cidades escolhidas para receber o luxuoso transatltântico, supostamente "inafundável", em sua primeira e última viagem.
+	</p>
+  <h2>Curiosidade sobre os portos</h2>
+  <p>
+	Southampton e Liverpool, Reino Unido, eram os canais de embarque preferíveis para os navios da época, mas Southampton apresentava certas vantagens em relação à Liverpool, a primeira delas era sua proximidade com Londres. Southampton, localizado na costa sul, permitia que os navios cruzassem facilmente o Canal da Mancha e fizessem um porto de escala na costa norte da França, geralmente em Cherbourg. Isso permitiu que navios britânicos levassem a clientela da Europa continental antes de atravessar o canal e pegar passageiros em Queenstown. A corrida de Southampton-Cherbourg-New York se tornaria tão popular que a maioria dos navios que cruzavam os oceanos britânicos começaram a usar o porto após a Primeira Guerra Mundial. A viagem inaugural do Titanic foi destinada a ser o primeiro de muitos cruzamentos transatlânticos entre Southampton e Nova York através de Cherbourg e Queenstown (Wikipedia).
+	</p>
+  <h2>A tragédia</h2>
+	<p>
+	Depois de deixar Southampton em 10 de abril de 1912, Titanic chegou em Cherbourg na França e Queenstown (agora Cobh) na Irlanda antes de se dirigir para o oeste de Nova York. No dia 14 de abril, quatro dias após o cruzamento e cerca de 375 milhas (600 km) ao sul de Terra Nova, ele atingiu um iceberg às 11h40 da manhã de domingo. 
+  </p>
+
+	<button id="btn1">Survived/Died by Groups</button>
+	<button id="btn2">Survived/Died by Port</button>
+	<button id="btn3">Classes by Port</button>
+  <button id="btn4">Gender by Port</button>
+
+  <div id="chartContainer">
+
+    <script type="text/javascript">
+     
+     
+        var svg = dimple.newSvg("#chartContainer", 590, 400);
+        d3.csv("d3_1.csv", function (data) {
+            var myChart = new dimple.chart(svg, data);
+            myChart.setBounds(65, 30, 505, 330)
+            myChart.addCategoryAxis("x", ["Embarked", "People"]);
+            myChart.addMeasureAxis("y", "Amount");
+            myChart.addMeasureAxis("z", "Amount");
+            myChart.addSeries("People", dimple.plot.bubble);   
+            myChart.addLegend(70, 10, 510, 20, "right");
+            myChart.draw();
+                
+        });
+    </script>
+
+    <script type="text/javascript"> 
+        d3.select("#btn1").on("click", function(){
+            d3.select("svg").remove();     
+            var svg = dimple.newSvg("#chartContainer", 590, 400);
+            d3.csv("d3_1.csv", function (data) {
+                var myChart = new dimple.chart(svg, data);
+                myChart.setBounds(65, 30, 505, 330)
+                myChart.addCategoryAxis("x", ["Embarked", "People"]);
+                myChart.addMeasureAxis("y", "Amount");
+                myChart.addMeasureAxis("z", "Amount");
+                myChart.addSeries("People", dimple.plot.bubble);
+                myChart.addLegend(70, 10, 510, 20, "right");
+                myChart.draw();
+                    
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        d3.select("#btn2").on("click", function(){
+            d3.select("svg").remove();
+            var svg = dimple.newSvg("#chartContainer", 600, 400);
+            d3.csv("d3_1.csv", function (data) {
+                var myChart = new dimple.chart(svg, data);
+                myChart.setBounds(75, 30, 480, 330)
+                myChart.addPctAxis("x", "Amount");
+                var y = myChart.addCategoryAxis("y", "Embarked");
+                y.addOrderRule("Embarked");
+                myChart.addSeries("People", dimple.plot.bar);
+                myChart.addLegend(60, 10, 510, 20, "right");
+                myChart.draw();
+
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        d3.select("#btn3").on("click", function(){
+            d3.select("svg").remove();
+            var svg = dimple.newSvg("#chartContainer", 600, 400);
+            d3.csv("d3_2.csv", function (data) {
+                var myChart = new dimple.chart(svg, data);
+                myChart.setBounds(65, 30, 505, 305)
+                var x = myChart.addCategoryAxis("x", "Class", "Ticket");
+                x.addOrderRule("Embarked");
+                myChart.addPctAxis("y", "Passenger");
+                myChart.addSeries("Embarked", dimple.plot.bar);
+                myChart.addLegend(60, 10, 510, 20, "right");
+                myChart.draw();
+
+            });        
+        });
+    </script>
+
+    <script type="text/javascript">
+        d3.select("#btn4").on("click", function(){
+            d3.select("svg").remove();
+            var svg = dimple.newSvg("#chartContainer", 600, 400);
+            d3.csv("d3_2.csv", function (data) {
+                var myChart = new dimple.chart(svg, data);
+                myChart.setBounds(60, 30, 510, 330)
+                myChart.addCategoryAxis("x", ["Gender", "Embarked"]);
+                myChart.addMeasureAxis("y", "Passenger");
+                myChart.addMeasureAxis("z", "Passenger");
+                myChart.addSeries("Embarked", dimple.plot.bar);
+                myChart.addLegend(65, 10, 510, 20, "right");
+                myChart.draw();
+            
+            });        
+        });
+        </script>
+  </script>
+</div>
+<h2>Características da tripulação</h2>
+<p>
+Classe Social, assim como o Sexo e a Idade, tinham correlações com o porto de embarque e quantia de membros da família a bordo, possivelmente causando algumas das tendências encontradas. Ter mais membros da família a bordo estava correlacionado com o passageiro de terceira classe, que ingressaram em sua maioria em Southampton. As três características (Classe Social, Sexo e Idade) são os indicadores mais fortes que determinaram a probabilidade de sobrevivência. Aqueles que embarcaram em Southampton foram muito menos propensos a sobreviver e a maioria dos passageiros (72%) eram de Southampton, poucos ingressos eram da primeira classe e havia um número desproporcionalmente elevado de homens (68%). Na contra mão, a maioria daqueles que embarcaram em Cherbourg apresentaram a maior taxa de sobrevivência e a maior parte destes eram da primeira classe. 
+</p>
+</html>

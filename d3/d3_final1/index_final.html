@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/lib/d3.v4.3.0.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+    <script src="http://d3js.org/d3.v3.js"></script>
+
+	<style>
+
+    	body {
+	     margin: 50px;
+        }
+
+
+	</style>
+
+	<style type="text/css">
+		h1 {
+			font-family: "Trebuchet MS", Helvetica, sans-serif;
+			font-size: 35px;
+		}
+
+		p {
+			width: 600px;
+			font-family: "Tahoma", Geneva, sans-serif;
+			font-size: 15px;
+		}
+	</style>
+
+</head>
+<body>
+
+	<h1>Introdução</h1>
+	<p>
+	De tudo o que se é visto do famoso naufrágio do Titanic, muito pouco foi explorado entre as características da tripulação e a correlação entre os três portos de embarque. Southampton (Reino Unido), Cherbourg (França) e Queenstown (Irlanda) foram as cidades escolhidas para receber o luxuoso transatltântico, supostamente "inafundável", em sua primeira e última viagem.
+	</p>
+    <h2>Curiosidade sobre os portos</h2>
+    <p>
+	Southampton (UK), localizado na costa sul possuía proximidade com Londres e permitia que os navios cruzassem facilmente o Canal da Mancha e fizessem um porto de escala na costa norte da França, geralmente em Cherbourg. Nem todos que subiram no Titanic iriam rumo a Nova York (EUA), o porto francês foi o canal de desembarque de uma pequena parcela, mas também foi o porto preferível de embarque da maior parte da tripulação da primeira classe. O porto de Queenstown (IR) foi o último antes do acidente e nele subiram a maior parte da tripulação que completaria a tereira classe (Wikipedia).
+	</p>
+    <h2>A tragédia</h2>
+	<p>
+	Depois de deixar o porto de Southampton em 10 de abril de 1912, Titanic fez mais duas paradas e no dia 14 de abril, cerca de 375 milhas (600 km) ao sul de Terra Nova, atingiu um iceberg às 11h40 da manhã de domingo. 
+    </p>
+    <h2>Características da tripulação</h2>
+    <p>
+    Classe Social, assim como o Gênero e Idade, tinham correlações com o porto de embarque e quantia de membros da família a bordo, possivelmente causando algumas das tendências encontradas. Ter mais membros da família a bordo estava correlacionado com os passageiros da terceira classe, que ingressaram em sua maioria em Southampton (UK). As características (Classe Social, Sexo e Idade) são os indicadores mais fortes que determinaram a probabilidade de sobrevivência. Passageiros de Southampton morreram em maior número, cerca de 72% eram de lá, poucos eram da primeira classe e havia 68% de homens. Em contraste, a maior parte dos passageiros de Cherbourg (FR) eram da primeira classe e apresentaram a maior taxa de sobrevivência.
+    </p>
+    <h2>Os gráficos</h2>
+    <p>
+    Abaixo possuem quatro gráficos interativos, que expoem dados diferentes em cada botão, nos quais é possível ver alguns detalhes a mais apenas deslizando o mouse sobre seus conteúdos e cores. 
+    </p>
+
+    <button id="btn1">Pessoas em Números</button>
+    <button id="btn2">Pessoas em %</button>
+    <button id="btn3">Classes por Embarque</button>
+    <button id="btn4">Gênero por Embarque</button>
+
+
+    <div id="chartContainer">
+
+        <script type="text/javascript">
+     
+     
+            var svg = dimple.newSvg("#chartContainer", 590, 400);
+            d3.csv("d3_1.csv", function (data) {
+                var myChart = new dimple.chart(svg, data);
+                myChart.setBounds(65, 30, 505, 330)
+                var x = myChart.addCategoryAxis("x", ["Embarque", "Pessoas"]);
+                x.title = "Pessoas / Porta de embarque";
+                var y = myChart.addMeasureAxis("y", "Quantia");
+                y.title = "Quantidade de sobreviventes e mortos em números";
+                myChart.addMeasureAxis("z", "Quantia");
+                myChart.addSeries("Pessoas", dimple.plot.bubble);   
+                myChart.addLegend(70, 10, 510, 20, "right");
+                myChart.draw();
+                
+            });
+        </script>
+
+        <script type="text/javascript">
+            d3.select("#btn1").on("click", function(){
+                d3.select("svg").remove();     
+                var svg = dimple.newSvg("#chartContainer", 590, 400);
+                d3.csv("d3_1.csv", function (data) {
+                    var myChart = new dimple.chart(svg, data);
+                    myChart.setBounds(65, 30, 505, 330)
+                    var x =myChart.addCategoryAxis("x", ["Embarque", "Pessoas"]);
+                    x.title = "Pessoas / Porta de embarque";
+                    var y = myChart.addMeasureAxis("y", "Quantia");
+                    y.title = "Quantidade de sobreviventes e mortos em números";
+                    myChart.addMeasureAxis("z", "Quantia");
+                    myChart.addSeries("Pessoas", dimple.plot.bubble);
+                    myChart.addLegend(70, 10, 510, 20, "right");
+                    myChart.draw();
+                    
+                });
+            });
+        </script>
+
+        <script type="text/javascript">
+            d3.select("#btn2").on("click", function(){
+                d3.select("svg").remove();
+                var svg = dimple.newSvg("#chartContainer", 600, 400);
+                d3.csv("d3_1.csv", function (error, data) {
+                    var myChart = new dimple.chart(svg, data);
+                    myChart.setBounds(75, 30, 480, 330)
+                    var x = myChart.addPctAxis("x", "Quantia");
+                    x.title = "Quantidade de sobreviventes e mortos em %";
+                    var y = myChart.addCategoryAxis("y", "Embarque");
+                    y.addOrderRule(["Southampton-UK", "Cherbourg-FR", "Queenstown-IR"]);
+                    myChart.addSeries("Pessoas", dimple.plot.bar);
+                    myChart.addLegend(60, 10, 510, 20, "right");
+                    myChart.draw();
+
+                });
+            });
+        </script>
+
+        <script type="text/javascript">
+            d3.select("#btn3").on("click", function(){
+                d3.select("svg").remove();
+                var svg = dimple.newSvg("#chartContainer", 600, 400);
+                d3.csv("d3_2.csv", function (data) {
+                    var myChart = new dimple.chart(svg, data);
+                    myChart.setBounds(65, 30, 505, 305)
+                    var x = myChart.addCategoryAxis("x", "Classe", "Ticket");
+                    x.addOrderRule(["Primeira", "Segunda", "Terceira"]);
+                    x.title = "Classes";
+                    myChart.addPctAxis("y", "Passageiros");
+                    myChart.addSeries("Embarque", dimple.plot.bar);
+                    myChart.addLegend(60, 10, 510, 20, "right");
+                    myChart.draw();
+                        
+                });
+            });
+        </script>
+
+        <script type="text/javascript">
+            d3.select("#btn4").on("click", function(){
+                d3.select("svg").remove();
+                var svg = dimple.newSvg("#chartContainer", 590, 400);
+                d3.csv("d3_2.csv", function (data) {
+                    var myChart = new dimple.chart(svg, data);
+                    myChart.setBounds(65, 50, 505, 310)
+                    var x = myChart.addPctAxis("x", "Embarque",  "Sexo");
+                    x.title = "Homens / Mulheres";
+                    myChart.addPctAxis("y", "Passageiros");
+                    myChart.addSeries("Embarque", dimple.plot.bar);
+                    myChart.addLegend(240, 10, 330, 20, "right");
+                    myChart.draw();
+            
+                });        
+            });
+        </script>
+    </script>
+</div>
+</html>
